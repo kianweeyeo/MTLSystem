@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./layout/default.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        New User
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="form">
+            <!-- using growl -->
+            <p:growl id="growl" showDetail="true" sticky="true" />
+            <p:panelGrid columns="2">
+                <f:facet name="header">
+                    Create New User
+                </f:facet>
+                <h:outputLabel for="username">Username: </h:outputLabel>
+                <p:inputText id="username" value="#{userManagedBean.username}" label="Username" required="true" requiredMessage="Name is required" />
+                <h:outputLabel for="pwd1" value="Enter Password: " />
+                <p:password id="pwd1" value="#{userManagedBean.password}" match="pwd2" label="Enter Password" required="true" />
+                <h:outputLabel for="pwd2" value="Confirm Password: " />
+                <p:password id="pwd2" value="#{userManagedBean.password}" label="Confirm Password" required="true" />
+                <h:outputLabel for="firstName">First Name: </h:outputLabel>
+                <p:inputText id="firstName" value="#{userManagedBean.firstName}" label="First Name" required="true" requiredMessage="First Name is required" />
+                <h:outputLabel for="lastName">Last Name: </h:outputLabel>
+                <p:inputText id="lastName" value="#{userManagedBean.lastName}" label="Last Name" required="true" requiredMessage="Last Name is required" /> 
+                <h:outputLabel for="dateOfBirth">Date of Birth (dd/mm/yyyy): </h:outputLabel>
+                <p:inputText id="dateOfBirth" value="#{userManagedBean.dateOfBirth}" label="Date of Birth" required="true" requiredMessage="DOB is required" converterMessage="Format should be dd/mm/yyyy">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </p:inputText>
+                <h:outputLabel for="isSeller">Are you a Seller? </h:outputLabel>
+                <p:selectBooleanCheckbox value = "#{userManagedBean.isSeller}" label="Is Seller?" id = "isSeller" />
+                <h:outputLabel for="isBuyer">Are you a Buyer? </h:outputLabel>
+                <p:selectBooleanCheckbox value = "#{userManagedBean.isBuyer}" label="Is Buyer?" id = "isBuyer" />
+                <p:commandButton value="Submit" 
+                                 actionListener="#{userManagedBean.createUser}"
+                                 action="searchUsers.xhtml?faces-redirect=true"
+                                 icon="ui-icon-disk"
+                                 update=":form" />
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
