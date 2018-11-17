@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/web/listItems.xhtml</file>
-            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/web/addItem.xhtml</file>
-            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/web/layout/default.xhtml</file>
+            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/src/java/webservices/restful/UsersResource.java</file>
+            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/src/java/webservices/restful/ApplicationConfig.java</file>
+            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/web/index.xhtml</file>
+            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/web/testFiles/searchUsers.xhtml</file>
+            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/src/java/managedbean/UserManagedBean.java</file>
             <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/web/searchUsers.xhtml</file>
+            <file>file:/C:/Users/yeokw/OneDrive/Dropbox/NUS/MTLSystem/MTLSystem-war/web/manageUsers.xhtml</file>
         </group>
     </open-files>
 </project-private>

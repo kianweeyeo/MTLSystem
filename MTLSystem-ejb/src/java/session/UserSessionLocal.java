@@ -16,17 +16,19 @@ import javax.ejb.Local;
 public interface UserSessionLocal {
     
     // System Functions
-    public MTLUser userLogin(String username, String password);
-    public List<MTLUser> searchUsers(String username);
-    public MTLUser getUser(Long userId) throws GeneralException;
-    public void createUser(MTLUser u);
-    public void updateUser(MTLUser u) throws GeneralException;
+    public MTLUser userLogin(String username, String password) throws GeneralException; // Done RESTful
+    public List<MTLUser> searchUsers(String username); // Done RESTful
+    public List<MTLUser> searchUsersByPhoneNumber(int phoneNumber) throws GeneralException; // Done RESTful
+    public List<MTLUser> searchUsersByEmail(String email) throws GeneralException; // Done RESTful
+    public MTLUser getUser(Long userId) throws GeneralException; // Done RESTful
+    public void createUser(MTLUser u); // Done RESTful
+    public void updateUser(MTLUser u) throws GeneralException; // Done RESTful
     
     // Admin Functions
-    public List<MTLUser> viewAllUsers();
-    public void activateUser(Long userId) throws GeneralException;
-    public void deactivateUser(Long userId) throws GeneralException;
-    public void deleteUser(Long userId) throws GeneralException;
+    public List<MTLUser> viewAllUsers(); // Done RESTful
+    public void activateUser(Long userId) throws GeneralException; // Done RESTful
+    public void deactivateUser(Long userId) throws GeneralException; // Done RESTful
+    public void deleteUser(Long userId) throws GeneralException; // Done RESTful
 
     // Seller Functions
     public void addSellerItem(Long userId, Item i) throws GeneralException;

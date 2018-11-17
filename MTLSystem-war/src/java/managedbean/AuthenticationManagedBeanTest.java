@@ -1,6 +1,7 @@
 package managedbean;
 
 import entity.MTLUser;
+import error.GeneralException;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -28,7 +29,7 @@ public class AuthenticationManagedBeanTest implements Serializable {
     public AuthenticationManagedBeanTest() {
     }
     
-    public String login() {
+    public String login() throws GeneralException {
         FacesContext context = FacesContext.getCurrentInstance();
         MTLUser u = userSessionLocal.userLogin(username, password);
         if (u != null) {

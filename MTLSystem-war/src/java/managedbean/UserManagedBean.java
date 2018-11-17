@@ -33,6 +33,8 @@ public class UserManagedBean {
     private String password;
     private String firstName;
     private String lastName;
+    private int phoneNumber;
+    private String email;
     private Date dateOfBirth;
     private boolean isAdmin;
     private boolean isSeller;
@@ -51,7 +53,7 @@ public class UserManagedBean {
     private String itemCategory;
     private double itemPrice;
     
-    // PrimeFaces attributes
+    //used by editUser.xhtml
     private List<MTLUser> users;
     private MTLUser selectedUser;
     private List<Item> items;
@@ -70,42 +72,29 @@ public class UserManagedBean {
         u.setPassword(password);
         u.setFirstName(firstName);
         u.setLastName(lastName);
+        u.setPhoneNumber(phoneNumber);
+        u.setEmail(email);
         u.setDateOfBirth(dateOfBirth);
+        u.setIsAdmin(false);
         u.setIsSeller(isSeller);
         u.setIsBuyer(isBuyer);
-        u.setIsActive(true);
-        u.setUserCreated(new Date());
 
         userSessionLocal.createUser(u);
     }
     
-    public void loadSelectedUser() {
-        FacesContext context = FacesContext.getCurrentInstance();
-        try {
-            this.selectedUser = userSessionLocal.getUser(userId);
-            username = this.selectedUser.getUsername();
-            password = "";
-            firstName = this.selectedUser.getFirstName();
-            lastName = this.selectedUser.getLastName();
-            dateOfBirth = this.selectedUser.getDateOfBirth();
-            isSeller = this.selectedUser.isIsSeller();
-            isBuyer = this.selectedUser.isIsBuyer();
-        } catch (Exception e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to load User"));
-        }
-    } //end loadSelectedUser
-    
     public void updateUser(ActionEvent evt) {
         FacesContext context = FacesContext.getCurrentInstance();
-        selectedUser.setUsername(username);
-        selectedUser.setPassword(password);
-        selectedUser.setFirstName(firstName);
-        selectedUser.setLastName(lastName);
-        selectedUser.setDateOfBirth(dateOfBirth);
-        selectedUser.setIsSeller(isSeller);
-        selectedUser.setIsBuyer(isBuyer);
+        getSelectedUser().setUsername(username);
+        getSelectedUser().setPassword(password);
+        getSelectedUser().setFirstName(firstName);
+        getSelectedUser().setLastName(lastName);
+        getSelectedUser().setPhoneNumber(phoneNumber);
+        getSelectedUser().setEmail(email);
+        getSelectedUser().setDateOfBirth(dateOfBirth);
+        getSelectedUser().setIsSeller(isSeller);
+        getSelectedUser().setIsBuyer(isBuyer);
         try {
-            userSessionLocal.updateUser(selectedUser);
+            userSessionLocal.updateUser(getSelectedUser());
         } catch (Exception e) {
             //show with an error icon
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to update User"));
@@ -114,6 +103,24 @@ public class UserManagedBean {
         //need to make sure reinitialize the users collection
         context.addMessage(null, new FacesMessage("Success", "Successfully updated User"));
     } //end updateUser
+    
+    public void loadSelectedUser() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            this.setSelectedUser(userSessionLocal.getUser(userId));
+            username = this.getSelectedUser().getUsername();
+            password = "";
+            firstName = this.getSelectedUser().getFirstName();
+            lastName = this.getSelectedUser().getLastName();
+            phoneNumber = this.getSelectedUser().getPhoneNumber();
+            email = this.getSelectedUser().getEmail();
+            dateOfBirth = this.getSelectedUser().getDateOfBirth();
+            isSeller = this.getSelectedUser().isIsSeller();
+            isBuyer = this.getSelectedUser().isIsBuyer();
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to load User"));
+        }
+    } //end loadSelectedUser
     
     public void activateUser() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -156,10 +163,10 @@ public class UserManagedBean {
         i.setCategory(itemCategory);
         i.setPrice(itemPrice);
         i.setItemCreated(new Date());
-        i.setItemSellerId(selectedUser.getUserId());
+        i.setItemSellerId(getSelectedUser().getUserId());
         
         try {
-            userSessionLocal.addSellerItem(selectedUser.getUserId(), i);
+            userSessionLocal.addSellerItem(getSelectedUser().getUserId(), i);
         } catch (Exception e) {
         //show with an error icon
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to add Item"));
@@ -168,6 +175,15 @@ public class UserManagedBean {
         context.addMessage(null, new FacesMessage("Success", "Successfully added Item"));
         init();
     }
+    
+    //new method to "combine" both add and update
+    public void submitAction(ActionEvent evt) {
+        if (this.getSelectedUser() != null) {
+            this.updateUser(evt);
+        } else {
+            this.createUser(evt);
+        }
+    } //end submitAction
 
     /**
      * @return the userId
@@ -461,6 +477,48 @@ public class UserManagedBean {
      */
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    /**
+     * @return the phoneNumber
+     */
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
+     * @param phoneNumber the phoneNumber to set
+     */
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the selectedUser
+     */
+    public MTLUser getSelectedUser() {
+        return selectedUser;
+    }
+
+    /**
+     * @param selectedUser the selectedUser to set
+     */
+    public void setSelectedUser(MTLUser selectedUser) {
+        this.selectedUser = selectedUser;
     }
     
 }

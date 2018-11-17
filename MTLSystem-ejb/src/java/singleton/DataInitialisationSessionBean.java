@@ -32,7 +32,7 @@ public class DataInitialisationSessionBean {
     }
     
     private void initialiseData() {
-        MTLUser systemAdmin = new MTLUser("admin", "admin", "John", "Tan", new Date(1990, 12, 25), true, false, false);
+        MTLUser systemAdmin = new MTLUser("admin", "admin", "John", "Tan", 91234567, "john@gmail.com", new Date(1990, 12, 25), true, false, false);
         em.persist(systemAdmin);
     }
 }

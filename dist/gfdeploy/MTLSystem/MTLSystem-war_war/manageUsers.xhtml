@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    
+    <body>
+        
+        <ui:composition template="./layout/default2.xhtml">
+            <!-- for edit case -->
+            <f:metadata>
+                <f:viewParam name="userId" value="#{userManagedBean.userId}" />
+                <f:event type="preRenderView" listener="#{userManagedBean.loadSelectedUser}"/>
+            </f:metadata>
+
+            <ui:define name="title">
+                Manage User
+            </ui:define>
+
+            <ui:define name="content">
+                <!-- Content Header (Page header) -->
+                <div class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1 class="m-0 text-dark">Manage User</h1>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="#{request.contextPath}">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">
+                                        #{userManagedBean.selectedUser == null ? 'Create New User' : 'Edit User'}
+                                    </li>
+                                </ol>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+                <!-- /.content-header -->
+
+                <!-- Main content -->
+                <section class="content">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                #{userManagedBean.selectedUser == null ? 'Create New User' : 'Edit User'}
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <h:form>
+                            <div class="card-body">
+                                
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input 
+                                        binding="#{username}" id="username" 
+                                        value="#{userManagedBean.username}" 
+                                        placeholder="Enter Username"
+                                        required="true" requiredMessage="Username is required" 
+                                        class="form-control" />
+                                    <h:message for="username" class="invalid-feedback"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input 
+                                        binding="#{password}" id="password" 
+                                        value="#{userManagedBean.password}" 
+                                        placeholder="Enter Password"
+                                        required="true" requiredMessage="Password is required" 
+                                        class="form-control" type="password" 
+                                        title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" />
+                                    <h:message for="password" class="invalid-feedback"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input 
+                                        binding="#{firstName}" id="firstName" 
+                                        value="#{userManagedBean.firstName}" 
+                                        placeholder="Enter First Name"
+                                        required="true" requiredMessage="First Name is required" 
+                                        class="form-control" />
+                                    <h:message for="firstName" class="invalid-feedback"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input 
+                                        binding="#{lastName}" id="lastName" 
+                                        value="#{userManagedBean.lastName}" 
+                                        placeholder="Enter Last Name"
+                                        required="true" requiredMessage="Last Name is required" 
+                                        class="form-control" />
+                                    <h:message for="lastName" class="invalid-feedback"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phoneNumber">Phone Number</label>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                        <input 
+                                            binding="#{phoneNumber}" id="phoneNumber" 
+                                            value="#{userManagedBean.phoneNumber}" 
+                                            placeholder="Enter Phone Number"
+                                            required="true" requiredMessage="Phone Number is required" 
+                                            title="Must be an 8-digit number. E.g. 91234567"
+                                            class="form-control" type="tel"
+                                            pattern="[0-9]{8}" />
+                                        <h:message for="phoneNumber" class="invalid-feedback"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                        <input 
+                                        binding="#{email}" id="email" 
+                                        value="#{userManagedBean.email}" 
+                                        placeholder="Enter Email Address"
+                                        required="true" requiredMessage="Email Address is required" 
+                                        class="form-control" type="email"
+                                        title="Must be in a valid email format. E.g. hello@gmail.com"
+                                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+                                    <h:message for="email" class="invalid-feedback"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputName">Date of Birth (dd/mm/yyyy)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                        <h:inputText 
+                                            binding="#{dateOfBirth}" 
+                                            id="dateOfBirth" 
+                                            value="#{userManagedBean.dateOfBirth}" 
+                                            required="true" requiredMessage="DOB is required" 
+                                            converterMessage="Format should be dd/mm/yyy" 
+                                            class="form-control datepicker">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:inputText>
+                                        <h:message for="inputDOB" class="invalid-feedback"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <h:outputLabel for="isSeller">Are you a Seller? </h:outputLabel>
+                                    <br></br>
+                                    <h:selectBooleanCheckbox value = "#{userManagedBean.isSeller}" label="Is Seller?" id = "isSeller" />                                    
+                                </div>
+                                <div class="form-group">
+                                    <h:outputLabel for="isBuyer">Are you a Buyer? </h:outputLabel>
+                                    <br></br>
+                                    <h:selectBooleanCheckbox value = "#{userManagedBean.isBuyer}" label="Is Buyer?" id = "isBuyer" />
+                                </div>                                
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <h:button value="Cancel" class="btn btn-default" outcome="searchUsers" />
+                                <h:commandButton value="Submit" class="btn btn-primary float-right" actionListener="#{userManagedBean.submitAction}" action="searchUsers?faces-redirect=true"/>
+                            </div>
+                        </h:form>
+                    </div>
+                    <!-- /.card -->
+                </section>
+                <!-- /.content -->
+            </ui:define>
+
+            <ui:define name="script">
+                <script>
+                    //iCheck for checkbox and radio inputs
+                    $('input[type="radio"].minimal').iCheck({
+                        radioClass: 'iradio_minimal-blue'
+                    });
+
+                    //Date picker
+                    $('.datepicker').datepicker({
+                        autoclose: true,
+                        format: 'dd/mm/yyyy',
+                        orientation: 'bottom left'
+                    });
+                </script>
+            </ui:define>
+
+        </ui:composition>
+        
+    </body>
+</html>

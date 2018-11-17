@@ -28,6 +28,8 @@ public class MTLUser implements Serializable {
     private String password;
     private String firstName;
     private String lastName;
+    private int phoneNumber;
+    private String email;
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
     private boolean isAdmin;
@@ -46,13 +48,20 @@ public class MTLUser implements Serializable {
     private ArrayList<PurchaseOrder> buyerOrderList;
 
     public MTLUser() {
+        this.isActive = true;
+        this.userCreated = new Date();
+        this.sellerItemList = new ArrayList<Item>();
+        this.cart = new Cart();
+        this.buyerOrderList = new ArrayList<PurchaseOrder>();
     }
 
-    public MTLUser(String username, String password, String firstName, String lastName, Date dateOfBirth, boolean isAdmin, boolean isSeller, boolean isBuyer) {
+    public MTLUser(String username, String password, String firstName, String lastName, int phoneNumber, String email, Date dateOfBirth, boolean isAdmin, boolean isSeller, boolean isBuyer) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.isAdmin = isAdmin;
         this.isSeller = isSeller;
@@ -277,6 +286,34 @@ public class MTLUser implements Serializable {
      */
     public void setBuyerOrderList(ArrayList<PurchaseOrder> buyerOrderList) {
         this.buyerOrderList = buyerOrderList;
+    }
+
+    /**
+     * @return the phoneNumber
+     */
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    /**
+     * @param phoneNumber the phoneNumber to set
+     */
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
     
 }

@@ -1,6 +1,7 @@
 package managedbean;
 
 import entity.MTLUser;
+import error.GeneralException;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -13,7 +14,7 @@ import session.UserSessionLocal;
  */
 @ManagedBean
 @SessionScoped
-public class AuthenticationManagedBean implements Serializable{
+public class AuthenticationManagedBean implements Serializable {
 
     private String username = null;
     private String password = null;
@@ -25,7 +26,7 @@ public class AuthenticationManagedBean implements Serializable{
     public AuthenticationManagedBean() {
     }
     
-    public String login(){
+    public String login() throws GeneralException{
         //by right supposed to use a session bean to 
         //do validation here
         MTLUser u = userSessionLocal.userLogin(username, password);

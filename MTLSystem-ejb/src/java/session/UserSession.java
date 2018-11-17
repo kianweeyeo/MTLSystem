@@ -23,18 +23,21 @@ public class UserSession implements UserSessionLocal {
     @PersistenceContext
     private EntityManager em;
     
+    // SYSTEM FUNCTIONS BELOW **************************************************************
+    
     // System function
     // Logout will be handled via HttpSession
     @Override
-    public MTLUser userLogin(String username, String password) {
+    public MTLUser userLogin(String username, String password) throws GeneralException {
         Query query = em.createQuery("SELECT u FROM MTLUser u WHERE u.username = :username AND u.password = :password");
         query.setParameter("username", username);
         query.setParameter("password", password);
         if (!query.getResultList().isEmpty()) {
             MTLUser user = (MTLUser) query.getSingleResult();
             return user;
+        } else {
+            throw new GeneralException("User Not Found");
         }
-        return null;
     }
     
     // System function
@@ -42,11 +45,38 @@ public class UserSession implements UserSessionLocal {
     public List<MTLUser> searchUsers(String username) {
         Query q;
         if (username != null) {
-            q = em.createQuery("SELECT u FROM MTLUser u WHERE "
-                    + "LOWER(u.username) LIKE :username");
+            q = em.createQuery("SELECT u FROM MTLUser u WHERE LOWER(u.username) LIKE :username");
             q.setParameter("username", "%" + username.toLowerCase() + "%");
         } else {
             q = em.createQuery("SELECT u FROM MTLUser u");
+        }
+
+        return q.getResultList();
+    }
+    
+    // System function
+    @Override
+    public List<MTLUser> searchUsersByPhoneNumber(int phoneNumber) throws GeneralException {
+        Query q;
+        if (phoneNumber > 0) {
+            q = em.createQuery("SELECT u FROM MTLUser u WHERE u.phoneNumber = :phoneNumber");
+            q.setParameter("phoneNumber", phoneNumber);
+        } else {
+            throw new GeneralException("Invalid Value Entered");
+        }
+
+        return q.getResultList();
+    }
+    
+    // System function
+    @Override
+    public List<MTLUser> searchUsersByEmail(String email) throws GeneralException {
+        Query q;
+        if (email != null) {
+            q = em.createQuery("SELECT u FROM MTLUser u WHERE LOWER(u.email) LIKE :email");
+            q.setParameter("email", "%" + email.toLowerCase() + "%");
+        } else {
+            throw new GeneralException("Invalid Value Entered");
         }
 
         return q.getResultList();
@@ -80,6 +110,8 @@ public class UserSession implements UserSessionLocal {
             oldU.setPassword(u.getPassword());
             oldU.setFirstName(u.getFirstName());
             oldU.setLastName(u.getLastName());
+            oldU.setPhoneNumber(u.getPhoneNumber());
+            oldU.setEmail(u.getEmail());
             oldU.setDateOfBirth(u.getDateOfBirth());
             oldU.setIsSeller(u.isIsSeller());
             oldU.setIsBuyer(u.isIsBuyer());
@@ -88,11 +120,13 @@ public class UserSession implements UserSessionLocal {
         }
     }
     
+    // ADMIN FUNCTIONS BELOW **************************************************************
+    
     // Admin function - viewAllUsers
     @Override
     public List<MTLUser> viewAllUsers() {
         Query q;
-        q = em.createQuery("SELECT * FROM User u");
+        q = em.createQuery("SELECT u FROM MTLUser u");
 
         return q.getResultList();
     }

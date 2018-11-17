@@ -9,7 +9,7 @@ import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-10-31T11:07:05")
+@Generated(value="EclipseLink-2.5.2.v20140319-rNA", date="2018-11-18T00:26:28")
 @StaticMetamodel(MTLUser.class)
 public class MTLUser_ { 
 
@@ -25,6 +25,8 @@ public class MTLUser_ {
     public static volatile SingularAttribute<MTLUser, Cart> cart;
     public static volatile SingularAttribute<MTLUser, String> firstName;
     public static volatile SingularAttribute<MTLUser, String> password;
+    public static volatile SingularAttribute<MTLUser, Integer> phoneNumber;
+    public static volatile SingularAttribute<MTLUser, String> email;
     public static volatile SingularAttribute<MTLUser, String> username;
     public static volatile ListAttribute<MTLUser, PurchaseOrder> buyerOrderList;
 
