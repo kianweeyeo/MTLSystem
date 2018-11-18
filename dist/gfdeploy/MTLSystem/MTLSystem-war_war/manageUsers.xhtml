@@ -17,7 +17,7 @@
             </f:metadata>
 
             <ui:define name="title">
-                Manage User
+                MaiTuLiao.com | Manage Users
             </ui:define>
 
             <ui:define name="content">
@@ -60,8 +60,140 @@
                         <!-- form start -->
                         <h:form>
                             <div class="card-body">
+                                <!-- JSF FORMAT-->
+                                <div class="form-group has-feedback">
+                                    <label for="username">Username</label>
+                                    <h:inputText 
+                                        binding="#{username}" id="username" 
+                                        value="#{userManagedBean.username}" 
+                                        required="true" requiredMessage="Username is required" 
+                                        class="form-control #{username.valid ? '' :'is-invalid'}" />
+                                    <h:message for="username" class="invalid-feedback"/>
+                                </div>
                                 
-                                <div class="form-group">
+                                <div class="form-group has-feedback">
+                                    <label for="password">Password</label>
+                                    <h:inputText 
+                                        binding="#{password}" id="password" 
+                                        value="#{userManagedBean.password}" 
+                                        required="true" requiredMessage="Password is required"
+                                        title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                        class="form-control #{password.valid ? '' :'is-invalid'}" />
+                                    <h:message for="password" class="invalid-feedback"/>
+                                </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <label for="firstName">First Name</label>
+                                    <h:inputText 
+                                        binding="#{firstName}" id="firstName" 
+                                        value="#{userManagedBean.firstName}" 
+                                        required="true" requiredMessage="First Name is required" 
+                                        class="form-control #{firstName.valid ? '' :'is-invalid'}" />
+                                    <h:message for="firstName" class="invalid-feedback"/>
+                                </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <label for="lastName">Last Name</label>
+                                    <h:inputText 
+                                        binding="#{lastName}" id="lastName" 
+                                        value="#{userManagedBean.lastName}" 
+                                        required="true" requiredMessage="Last Name is required" 
+                                        class="form-control #{lastName.valid ? '' :'is-invalid'}" />
+                                    <h:message for="lastName" class="invalid-feedback"/>
+                                </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <label for="phoneNumber">Phone Number</label>
+                                    <h:inputText 
+                                        binding="#{phoneNumber}" id="phoneNumber" 
+                                        value="#{userManagedBean.phoneNumber}" 
+                                        required="true" requiredMessage="Phone Number is required"
+                                        title="Must be an 8-digit number. E.g. 91234567"
+                                        class="form-control #{phoneNumber.valid ? '' :'is-invalid'}" />
+                                    <h:message for="phoneNumber" class="invalid-feedback"/>
+                                </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <label for="email">Email Address</label>
+                                    <h:inputText 
+                                        binding="#{email}" id="email" 
+                                        value="#{userManagedBean.email}" 
+                                        required="true" requiredMessage="Email Address is required" 
+                                        title="Must be in a valid email format. E.g. hello@gmail.com"
+                                        class="form-control #{email.valid ? '' :'is-invalid'}" />
+                                    <h:message for="email" class="invalid-feedback"/>
+                                </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <label for="inputName">Date of Birth (dd/mm/yyyy)</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                        <h:inputText 
+                                            binding="#{dateOfBirth}" 
+                                            id="dateOfBirth" 
+                                            value="#{userManagedBean.dateOfBirth}" 
+                                            required="true" requiredMessage="DOB is required" 
+                                            converterMessage="Format should be dd/mm/yyy" 
+                                            class="form-control datepicker">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:inputText>
+                                        <h:message for="dateOfBirth" class="invalid-feedback"/>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <h:outputLabel for="isSeller">Are you a Seller? </h:outputLabel>
+                                    <br></br>
+                                    <h:selectBooleanCheckbox value = "#{userManagedBean.isSeller}" label="Is Seller?" id = "isSeller" />                                    
+                                </div>
+                                
+                                <div class="form-group has-feedback">
+                                    <h:outputLabel for="isBuyer">Are you a Buyer? </h:outputLabel>
+                                    <br></br>
+                                    <h:selectBooleanCheckbox value = "#{userManagedBean.isBuyer}" label="Is Buyer?" id = "isBuyer" />
+                                </div>
+                                
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <h:button value="Cancel" class="btn btn-default" outcome="searchUsers" />
+                                <h:commandButton value="Submit" class="btn btn-primary float-right" actionListener="#{userManagedBean.submitUserAction}" action="searchUsers?faces-redirect=true"/>
+                            </div>
+                        </h:form>
+                    </div>
+                    <!-- /.card -->
+                </section>
+                <!-- /.content -->
+            </ui:define>
+
+            <ui:define name="script">
+                <script>
+                    //iCheck for checkbox and radio inputs
+                    $('input[type="radio"].minimal').iCheck({
+                        radioClass: 'iradio_minimal-blue'
+                    });
+
+                    //Date picker
+                    $('.datepicker').datepicker({
+                        autoclose: true,
+                        format: 'dd/mm/yyyy',
+                        orientation: 'bottom left'
+                    });
+                </script>
+            </ui:define>
+
+        </ui:composition>
+        
+    </body>
+</html>
+
+
+
+<!-- HTML INPUT FORMAT-->
+<!--                                <div class="form-group has-feedback">
                                     <label for="username">Username</label>
                                     <input 
                                         binding="#{username}" id="username" 
@@ -71,7 +203,7 @@
                                         class="form-control" />
                                     <h:message for="username" class="invalid-feedback"/>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group has-feedback">
                                     <label for="password">Password</label>
                                     <input 
                                         binding="#{password}" id="password" 
@@ -160,38 +292,4 @@
                                     <h:outputLabel for="isBuyer">Are you a Buyer? </h:outputLabel>
                                     <br></br>
                                     <h:selectBooleanCheckbox value = "#{userManagedBean.isBuyer}" label="Is Buyer?" id = "isBuyer" />
-                                </div>                                
-                            </div>
-                            <!-- /.card-body -->
-
-                            <div class="card-footer">
-                                <h:button value="Cancel" class="btn btn-default" outcome="searchUsers" />
-                                <h:commandButton value="Submit" class="btn btn-primary float-right" actionListener="#{userManagedBean.submitAction}" action="searchUsers?faces-redirect=true"/>
-                            </div>
-                        </h:form>
-                    </div>
-                    <!-- /.card -->
-                </section>
-                <!-- /.content -->
-            </ui:define>
-
-            <ui:define name="script">
-                <script>
-                    //iCheck for checkbox and radio inputs
-                    $('input[type="radio"].minimal').iCheck({
-                        radioClass: 'iradio_minimal-blue'
-                    });
-
-                    //Date picker
-                    $('.datepicker').datepicker({
-                        autoclose: true,
-                        format: 'dd/mm/yyyy',
-                        orientation: 'bottom left'
-                    });
-                </script>
-            </ui:define>
-
-        </ui:composition>
-        
-    </body>
-</html>
+                                </div>                                -->

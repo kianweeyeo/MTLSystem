@@ -4,6 +4,7 @@ import entity.Cart;
 import entity.Item;
 import entity.MTLUser;
 import entity.PurchaseOrder;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,9 +22,9 @@ import session.UserSessionLocal;
  *
  * @author yeokw | Yeo Kian Wee | A0162262M
  */
-@ManagedBean
+@ManagedBean(name="userManagedBean")
 @ViewScoped
-public class UserManagedBean {
+public class UserManagedBean implements Serializable {
     
     @EJB
     private UserSessionLocal userSessionLocal;
@@ -40,18 +41,20 @@ public class UserManagedBean {
     private boolean isSeller;
     private boolean isBuyer;
     private boolean isActive;
-    private Date userCreated;
 
     private ArrayList<Item> sellerItemList;
     private Cart cart;
     private ArrayList<PurchaseOrder> buyerOrderList;
     
     // Seller attributes
+    private Long itemId;
     private String itemName;
     private String itemDescription;
     private int itemQuantity;
     private String itemCategory;
     private double itemPrice;
+    private Long itemSellerId;
+    private Item selectedItem;
     
     //used by editUser.xhtml
     private List<MTLUser> users;
@@ -154,19 +157,19 @@ public class UserManagedBean {
         init();
     } //end deactivateUser
     
-    public void addItem(ActionEvent evt) {
+    public void createAndAddItem(ActionEvent evt) {
         FacesContext context = FacesContext.getCurrentInstance();
+        Long userId = ((Long) context.getExternalContext().getSessionMap().get("userId"));
         Item i = new Item();
         i.setName(itemName);
         i.setDescription(itemDescription);
         i.setQuantity(itemQuantity);
         i.setCategory(itemCategory);
         i.setPrice(itemPrice);
-        i.setItemCreated(new Date());
-        i.setItemSellerId(getSelectedUser().getUserId());
+        i.setItemSellerId(userId);
         
         try {
-            userSessionLocal.addSellerItem(getSelectedUser().getUserId(), i);
+            userSessionLocal.addSellerItem(userId, i);
         } catch (Exception e) {
         //show with an error icon
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to add Item"));
@@ -176,12 +179,56 @@ public class UserManagedBean {
         init();
     }
     
-    //new method to "combine" both add and update
-    public void submitAction(ActionEvent evt) {
+     public void updateItem(ActionEvent evt) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        getSelectedItem().setItemId(itemId);
+        getSelectedItem().setName(itemName);
+        getSelectedItem().setDescription(itemDescription);
+        getSelectedItem().setQuantity(itemQuantity);
+        getSelectedItem().setCategory(itemCategory);
+        getSelectedItem().setPrice(itemPrice);
+        try {
+            userSessionLocal.updateItem(getSelectedItem());
+        } catch (Exception e) {
+            //show with an error icon
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to update Item"));
+            return;
+        }
+        //need to make sure reinitialize the Items collection
+        context.addMessage(null, new FacesMessage("Success", "Successfully updated Item"));
+    } //end updateItem
+    
+    public void loadSelectedItem() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            this.setSelectedItem(userSessionLocal.getItem(userId, getItemId()));
+            itemId = this.getSelectedItem().getItemId();
+            itemName= this.getSelectedItem().getName();
+            itemDescription= this.getSelectedItem().getDescription();
+            itemQuantity= this.getSelectedItem().getQuantity();
+            itemCategory= this.getSelectedItem().getCategory();
+            itemPrice= this.getSelectedItem().getPrice();
+            itemSellerId= this.getSelectedItem().getItemSellerId();
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Unable to load Item"));
+        }
+    } //end loadSelectedItem
+    
+    //new method to "combine" both add and update User
+    public void submitUserAction(ActionEvent evt) {
         if (this.getSelectedUser() != null) {
             this.updateUser(evt);
         } else {
             this.createUser(evt);
+        }
+    } //end submitAction
+    
+    //new method to "combine" both add and update Item
+    public void submitItemAction(ActionEvent evt) {
+        if (this.getSelectedItem() != null) {
+            this.updateItem(evt);
+        } else {
+            this.createAndAddItem(evt);
         }
     } //end submitAction
 
@@ -323,20 +370,6 @@ public class UserManagedBean {
      */
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
-    }
-
-    /**
-     * @return the userCreated
-     */
-    public Date getUserCreated() {
-        return userCreated;
-    }
-
-    /**
-     * @param userCreated the userCreated to set
-     */
-    public void setUserCreated(Date userCreated) {
-        this.userCreated = userCreated;
     }
 
     /**
@@ -519,6 +552,48 @@ public class UserManagedBean {
      */
     public void setSelectedUser(MTLUser selectedUser) {
         this.selectedUser = selectedUser;
+    }
+
+    /**
+     * @return the selectedItem
+     */
+    public Item getSelectedItem() {
+        return selectedItem;
+    }
+
+    /**
+     * @param selectedItem the selectedItem to set
+     */
+    public void setSelectedItem(Item selectedItem) {
+        this.selectedItem = selectedItem;
+    }
+
+    /**
+     * @return the itemSellerId
+     */
+    public Long getItemSellerId() {
+        return itemSellerId;
+    }
+
+    /**
+     * @param itemSellerId the itemSellerId to set
+     */
+    public void setItemSellerId(Long itemSellerId) {
+        this.itemSellerId = itemSellerId;
+    }
+
+    /**
+     * @return the itemId
+     */
+    public Long getItemId() {
+        return itemId;
+    }
+
+    /**
+     * @param itemId the itemId to set
+     */
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
     
 }

@@ -12,7 +12,7 @@
         <ui:composition template="./layout/default2.xhtml">
 
             <ui:define name="title">
-                Search Users
+                MaiTuLiao.com | View and Search Users
             </ui:define>
 
             <ui:define name="content">
@@ -21,7 +21,7 @@
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0 text-dark">Search Users</h1>
+                                <h1 class="m-0 text-dark">View and Search Users</h1>
                             </div>
                             <!-- /.col -->
                             <div class="col-sm-6">
@@ -66,7 +66,7 @@
                                                 <th>Is Buyer?</th>
                                                 <th>Is Active?</th>
                                                 <th>Created</th>
-                                                <th></th>
+                                                <th>Activate | Edit | Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -84,7 +84,7 @@
                                                 <th>Is Buyer?</th>
                                                 <th>Is Active?</th>
                                                 <th>Created</th>
-                                                <th></th>
+                                                <th>Activate | Edit | Delete</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -94,32 +94,6 @@
                         </div>
                         <!-- /.col -->
                     </div>
-
-                    <div class="modal fade" id="modal-default">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Activate/Deactivate User</h5>
-                                </div>
-                                <div class="modal-body" id="dialog-body">
-                                    <h:commandButton title="Activate User" class="btn btn-primary"
-                                        actionListener="#{userManagedBean.activateUser}" >
-                                        <f:param name="userId" value="#{user.userId}" />
-                                    </h:commandButton>
-                                    <h:commandButton title="Deactivate User" class="btn btn-primary"
-                                        actionListener="#{userManagedBean.deactivateUser}" >
-                                        <f:param name="userId" value="#{user.userId}" />
-                                    </h:commandButton>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                            <!-- /.modal-content -->
-                        </div>
-                        <!-- /.modal-dialog -->
-                    </div>
-                    <!-- /.modal -->
 
                 </section>
                 <!-- /.content -->
@@ -172,47 +146,6 @@ var dtable = $('#userTable').DataTable({
     ]
   });
 
-function reloadDataTable() {
-  dtable.ajax.reload(function () {
-    if (selectedUId !== null) {
-      var data = dtable.data();
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].id === selectedUId) {
-          refreshDialog(data[i]);
-          break;
-        }
-      }
-    }
-  });
-} //end reloadDataTable
-
-function refreshDialog(data) {
-  var userid = data.id;
-  var html = '<div class="row">\
-  <div class="col-4"><b>UserId</b></div>\
-  <div class="col-8">' + userid + '</div>\
-  <div class="col-4"><b>Username</b></div>\
-  <div class="col-8">' + data.username + '</div>\
-  <div class="col-4"><b>First Name</b></div>\
-  <div class="col-8">' + data.firstName + '</div>\
-  <div class="col-4"><b>Last Name</b></div>\
-  <div class="col-8">' + data.lastName + '</div>\
-  <div class="col-4"><b>Phone Number</b></div>\
-  <div class="col-8">' + data.phoneNumber + '</div>\
-  <div class="col-4"><b>Email</b></div>\
-  <div class="col-8">' + data.email + '</div>\
-  <div class="col-4"><b>DOB</b></div>\
-  <div class="col-8">' + data.dob + '</div>\
-  <div class="col-4"><b>Is Seller?</b></div>\
-  <div class="col-8">' + data.isSeller + '</div>\
-  <div class="col-4"><b>Is Buyer?</b></div>\
-  <div class="col-8">' + data.isBuyer + '</div>\
-  <div class="col-4"><b>Is Active?</b></div>\
-  <div class="col-8">' + data.isActive + '</div>\
-  <div class="col-4"><b>Created Date</b></div>\
-  <div class="col-8">' + data.userCreated + '</div>';
-} //end refreshDialog
-
 $('#userTable tbody').on('click', 'button', function () {
   var button = $(this);
   var type = button.attr('data-type');
@@ -220,9 +153,13 @@ $('#userTable tbody').on('click', 'button', function () {
   var id = data.userId;
 
   if (type === 'view') {
-    //load the dialog box
-    refreshDialog(data);
-    selectedUId = id;
+    $.ajax({
+        url: '/MTLSystem-war/webresources/users/activateUser/' + id,
+        type: 'PUT',
+        success: function () {
+          dtable.ajax.reload();
+        }
+      });
   } //end if
   else if (type === 'edit') {
     window.location.href = "manageUsers.xhtml?userId=" + id;

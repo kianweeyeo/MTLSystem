@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+    <body>
+
+        <ui:composition template="./layout/default2.xhtml">
+
+            <ui:define name="title">
+                MaiTuLiao.com | View and Search Orders
+            </ui:define>
+
+            <ui:define name="content">
+                <!-- Content Header (Page header) -->
+                <div class="content-header">
+                    <div class="container-fluid">
+                        <div class="row mb-2">
+                            <div class="col-sm-6">
+                                <h1 class="m-0 text-dark">View and Search Orders</h1>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-sm-6">
+                                <ol class="breadcrumb float-sm-right">
+                                    <li class="breadcrumb-item">
+                                        <a href="#{request.contextPath}">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">
+                                        List Orders
+                                    </li>
+                                </ol>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </div>
+                <!-- /.content-header -->
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">View All Orders</h3>
+                                    
+                                    <div id="currentUserId" data-prodnumber="${authenticationManagedBean.userId}" />
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <table id="orderTable" class="table table-bordered table-striped">                                        
+                                        <thead>
+                                            <tr>
+                                                <th>OrderId</th>
+                                                <th>Order Status</th>
+                                                <th>Feedback Review</th>
+                                                <th>Feedback Rating</th>                                                
+                                                <th>Created</th>
+                                                <th>SellerId</th>
+                                                <th>Edit | Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>OrderId</th>
+                                                <th>Order Status</th>
+                                                <th>Feedback Review</th>
+                                                <th>Feedback Rating</th>                                                
+                                                <th>Created</th>
+                                                <th>SellerId</th>
+                                                <th>Edit | Delete</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+
+                </section>
+                <!-- /.content -->
+            </ui:define>
+
+            <ui:define name="script">
+<script>
+//<![CDATA[
+//Add the CDATA tag so that JSF will not have issues when using sensitive 
+//symbols e.g. < and &
+
+var selectedOrderId = null;
+var currentUserId = document.getElementById("currentUserId");
+var uId = currentUserId.getAttribute("data-prodnumber");
+
+var dtable = $('#orderTable').DataTable({
+  'paging': true,
+  'lengthChange': false,
+    'pageLength': 5, //5 entries per page
+    'searching': true,
+    'ordering': true,
+    'info': true,
+    'autoWidth': false,
+    'ajax': {
+      url: '/MTLSystem-war/webresources/users/order/get',
+      dataFilter: function (data) {
+        //add the 'data' attribute to the JSON response
+        //so that it can be read properly with DataTable
+        var json = jQuery.parseJSON(data);
+
+        json.map(function (item) {
+            //convert dob and created's date format
+            item.orderCreated = moment(item.orderCreated).format('DD/MM/YYYY');
+          });
+
+        json = {'data': json};
+        return JSON.stringify(json);
+      }
+    },
+    "columnDefs": [{
+      'targets': -1,
+      'data': null,
+      'defaultContent': '<div class="btn-group">\
+      <button type="button" data-type="edit" class="btn btn-default"><i class="fa fa-fw fa-edit"></i></button>\
+      <button type="button" data-type="delete" class="btn btn-default"><i class="fa fa-fw fa-remove"></i></button>\
+      </div>'
+    }],
+    'columns': [
+      {'data': 'orderId'},{'data': 'orderStatus'},{'data': 'feedbackReview'},{'data': 'feedbackRating'},
+      {'data': 'orderCreated'},{'data': 'orderSellerId'},{'data': null}
+    ]
+  });
+
+$('#orderTable tbody').on('click', 'button', function () {
+  var button = $(this);
+  var type = button.attr('data-type');
+  var data = dtable.row($(this).parents('tr')).data();
+  var itemId = data.itemId;
+
+ if (type === 'edit') {
+    window.location.href = "manageItems.xhtml?userId=" + uId + '&itemId=' + itemId;
+  } //end else if
+  else if (type === 'delete') {
+    //DO a DELETE request and refresh
+    var choice = confirm("Do you want to delete?");
+ 
+    if (choice) {
+      $.ajax({
+        url: '/MTLSystem-war/webresources/users/item/delete/uId=' + uId + ',itemId=' + itemId,
+        type: 'DELETE',
+        success: function () {
+          dtable.ajax.reload();
+        }
+      });
+    } //end if
+  } //end else if
+});
+
+$('#modal-default').on('hidden.bs.modal', function (e) {
+  selectedOrderId = null;
+})
+//]]>
+</script>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

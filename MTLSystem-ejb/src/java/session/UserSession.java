@@ -34,9 +34,13 @@ public class UserSession implements UserSessionLocal {
         query.setParameter("password", password);
         if (!query.getResultList().isEmpty()) {
             MTLUser user = (MTLUser) query.getSingleResult();
-            return user;
+            if (user.isIsActive() == true) {
+                return user;
+            } else {
+                throw new GeneralException("User is Deactivated, Not Allowed to Log In");
+            }
         } else {
-            throw new GeneralException("User Not Found");
+            throw new GeneralException("Invalid Credentials");
         }
     }
     
@@ -137,7 +141,11 @@ public class UserSession implements UserSessionLocal {
         MTLUser u = em.find(MTLUser.class, userId);
 
         if (u != null) {
-            u.setIsActive(true);
+            if (u.isIsActive() == true) {
+                u.setIsActive(false);
+            } else {
+                u.setIsActive(true);
+            }
         } else {
             throw new GeneralException("User Not Found");
         }
@@ -178,6 +186,24 @@ public class UserSession implements UserSessionLocal {
     
     // SELLER FUNCTIONS BELOW **************************************************************
     
+    // Seller function - getSellerItem
+    @Override    
+    public Item getItem(Long userId, Long itemId) throws GeneralException {
+        MTLUser u = em.find(MTLUser.class, userId);
+
+        if (u != null) {
+            List<Item> tempList = u.getSellerItemList();
+            for (int i=0; i < tempList.size(); i++) {
+                Item tempItem = tempList.get(i);
+                if (tempItem.getItemId() == itemId) {
+                    return tempItem;
+                }
+            }
+        } else {
+            throw new GeneralException("Item Not Found");
+        }
+        return null;
+    }    
     
     // Seller function - addSellerItem
     @Override
@@ -192,8 +218,17 @@ public class UserSession implements UserSessionLocal {
         }
     }
     
-    // Seller function - List/Search seller’s items:
     // Seller function - listAllItems
+    // The system should allow sellers to see their list of items
+    @Override
+    public List<Item> listAllItems() {
+        Query q;
+        q = em.createQuery("SELECT i FROM Item i");
+
+        return q.getResultList();
+    }
+    
+    // Seller function - List/Search seller’s items:
     // The system should allow sellers to see their list of items
     @Override
     public List<Item> listAllSellerItems(Long userId) {
@@ -307,6 +342,14 @@ public class UserSession implements UserSessionLocal {
         }
     }
     
+    // Seller and Buyer function - viewAllOrders
+    @Override
+    public List<PurchaseOrder> viewAllOrders() {
+        Query q;
+        q = em.createQuery("SELECT o FROM PurchaseOrder o");
+
+        return q.getResultList();
+    }    
     
     // BUYER FUNCTIONS BELOW **************************************************************
     

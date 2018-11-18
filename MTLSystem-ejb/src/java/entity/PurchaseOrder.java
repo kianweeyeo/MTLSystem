@@ -35,7 +35,16 @@ public class PurchaseOrder implements Serializable {
     private ArrayList<Item> orderItemList;
 
     public PurchaseOrder() {
-    }    
+        this.orderCreated = new Date();
+    }
+    
+    public PurchaseOrder(String orderStatus, String feedbackReview, int feedbackRating, Long sellerId) {
+        this.orderStatus = orderStatus;
+        this.feedbackReview = feedbackReview;
+        this.feedbackRating = feedbackRating;        
+        this.orderCreated = new Date();
+        this.orderSellerId = sellerId;
+    }
     
     public Long getOrderId() {
         return orderId;

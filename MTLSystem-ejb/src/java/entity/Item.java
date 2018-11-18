@@ -36,6 +36,17 @@ public class Item implements Serializable {
     private PurchaseOrder order;
 
     public Item() {
+        this.itemCreated = new Date();
+    }
+    
+    public Item(String name, String description, int quantity, String category, double price, Long sellerId) {
+        this.name = name;
+        this.description = description;
+        this.quantity = quantity;
+        this.category = category;
+        this.price = price;
+        this.itemCreated = new Date();
+        this.itemSellerId = sellerId;
     }
 
     public Long getItemId() {

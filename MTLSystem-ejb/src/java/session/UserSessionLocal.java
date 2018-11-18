@@ -31,13 +31,18 @@ public interface UserSessionLocal {
     public void deleteUser(Long userId) throws GeneralException; // Done RESTful
 
     // Seller Functions
+    public Item getItem(Long userId, Long itemId) throws GeneralException;
     public void addSellerItem(Long userId, Item i) throws GeneralException;
+    public List<Item> listAllItems();
     public List<Item> listAllSellerItems(Long userId);
     public List<Item> searchSellerItemsByKeyword(Long userId, Item i);
     public void deleteSellerItem(Long userId, Long itemId) throws GeneralException;
     public void updateItem(Item i) throws GeneralException;
     public List<PurchaseOrder> viewAllSellerOrders(Long userId);
     public void updateOrderStatus(PurchaseOrder o) throws GeneralException;
+    
+    // Seller and Buyer Functions
+    public List<PurchaseOrder> viewAllOrders();
     
     // Buyer Functions
     public List<Item> searchItems(Item i);

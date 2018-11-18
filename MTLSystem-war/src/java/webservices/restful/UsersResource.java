@@ -5,7 +5,9 @@
  */
 package webservices.restful;
 
+import entity.Item;
 import entity.MTLUser;
+import entity.PurchaseOrder;
 import error.GeneralException;
 import java.util.Date;
 import java.util.List;
@@ -191,7 +193,7 @@ public class UsersResource {
         }
     } //end deactivateUser
 
-    // Admin function - Only for testing use
+    // Admin function - deleteUser (Actual Delete)
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -210,5 +212,102 @@ public class UsersResource {
     
     // SELLER FUNCTIONS BELOW **************************************************************
     
+    // Seller function - getAllItems from all Sellers
+    @GET
+    @Path("/item/get")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Item> viewAllItems() {
+        return userSessionLocal.listAllItems();
+    } //end viewAllItems
     
+    // Seller function - getAllItems from that specific Seller
+    @GET
+    @Path("/item/get/uId={uId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Item> viewAllUserItems(@PathParam("uId") Long uId) {
+        return userSessionLocal.listAllSellerItems(uId);
+    } //end viewAllUserItems
+    
+    // Seller function - getItem
+    @GET
+    @Path("/item/get/uId={uId},itemId={itemId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getItem(@PathParam("uId") Long uId, @PathParam("itemId") Long itemId) {
+        try {
+            MTLUser u = userSessionLocal.getUser(uId);
+            Item i = userSessionLocal.getItem(uId, itemId);
+            return Response.status(200).entity(
+                    u
+            ).type(MediaType.APPLICATION_JSON).build();           
+        } catch (GeneralException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Item/User Not Found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    } //end getItem
+    
+    // Seller function - createItem
+    @POST
+    @Path("/item/create/uId={uId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createItem(@PathParam("uId") Long uId, Item i) {
+        try {
+            userSessionLocal.addSellerItem(uId, i);
+            return Response.status(200).entity(
+                    i
+            ).type(MediaType.APPLICATION_JSON).build();
+        } catch (GeneralException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Item/User Not Found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    } //end createUser
+    
+    // Seller function - updateItem
+    @PUT
+    @Path("/item/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateItem(Item i) {
+        try {
+            userSessionLocal.updateItem(i);
+            return Response.status(204).build();
+        } catch (GeneralException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Item Not Found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    } //end updateItem
+    
+    // Seller function - deleteItem
+    @DELETE
+    @Path("/item/delete/uId={uId},itemId={itemId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteItem(@PathParam("uId") Long uId, @PathParam("itemId") Long itemId) {
+        try {
+            userSessionLocal.deleteSellerItem(uId, itemId);
+            return Response.status(204).build();
+        } catch (GeneralException e) {
+            JsonObject exception = Json.createObjectBuilder()
+                    .add("error", "Item Not Found")
+                    .build();
+            return Response.status(404).entity(exception)
+                    .type(MediaType.APPLICATION_JSON).build();
+        }
+    } //end deleteUser
+    
+    // Seller and Buyer function - viewAllOrders
+    @GET
+    @Path("/order/get")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<PurchaseOrder> viewAllOrders() {
+        return userSessionLocal.viewAllOrders();
+    } //end viewAllItems
 }
